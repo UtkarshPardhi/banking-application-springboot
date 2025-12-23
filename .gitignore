@@ -1,0 +1,15 @@
+/target/
+.idea/
+*.iml
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Environment
+.env
+application.properties
