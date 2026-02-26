@@ -1,23 +1,31 @@
 package com.example.Banking_App.service.impl;
 
 import com.example.Banking_App.dto.AccountDto;
+import com.example.Banking_App.dto.TransactionDto;
 import com.example.Banking_App.entity.Account;
+import com.example.Banking_App.entity.Transaction;
 import com.example.Banking_App.exception.AccountException;
 import com.example.Banking_App.mapper.AccountMapper;
+import com.example.Banking_App.mapper.TransactionMapper;
 import com.example.Banking_App.repository.AccountRepository;
+import com.example.Banking_App.repository.TransactionRepository;
 import com.example.Banking_App.service.AccountService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
 
-    public AccountServiceImpl(AccountRepository accountRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override
@@ -35,6 +43,7 @@ public class AccountServiceImpl implements AccountService {
         return AccountMapper.mapToAccountDto(account);
     }
 
+    @Transactional
     @Override
     public AccountDto deposit(Long id, double amount) {
 
@@ -42,10 +51,20 @@ public class AccountServiceImpl implements AccountService {
                 .findById(id)
                 .orElseThrow(() -> new AccountException("Account does not exists"));
 
-        double total = account.getBalance() + amount;
-        account.setBalance(total);
-        Account savedAccount = accountRepository.save(account);
-        return AccountMapper.mapToAccountDto(savedAccount);
+//        double total = account.getBalance() + amount;
+//        account.setBalance(total);
+//        Account savedAccount = accountRepository.save(account);
+//        return AccountMapper.mapToAccountDto(savedAccount);
+
+        Transaction transaction = new Transaction();
+        transaction.setAccount(account);
+        transaction.setType("DEPOSIT");
+        transaction.setAmount(amount);
+        transaction.setTimestamp(LocalDateTime.now());
+
+        transactionRepository.save(transaction);
+
+        return AccountMapper.mapToAccountDto(account);
     }
 
     @Override
@@ -59,11 +78,24 @@ public class AccountServiceImpl implements AccountService {
           throw new RuntimeException("Insufficient amount");
       }
 
-      double total = account.getBalance() - amount;
-      account.setBalance(total);
-      Account savedAccount = accountRepository.save(account);
+//      double total = account.getBalance() - amount;
+//      account.setBalance(total);
+//      Account savedAccount = accountRepository.save(account);
+//
+//      return  AccountMapper.mapToAccountDto(savedAccount);
 
-      return  AccountMapper.mapToAccountDto(savedAccount);
+        account.setBalance(account.getBalance() - amount);
+      accountRepository.save(account);
+
+      Transaction transaction = new Transaction();
+      transaction.setAccount(account);
+      transaction.setType("WITHDRAW");
+      transaction.setAmount(amount);
+      transaction.setTimestamp(LocalDateTime.now());
+
+      transactionRepository.save(transaction);
+
+      return AccountMapper.mapToAccountDto(account);
     }
 
     @Override
@@ -85,5 +117,19 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    @Override
+    public List<TransactionDto> getTransactionsByAccountId(Long accountId) {
+
+        // Check if account exists first
+        accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountException("Account does not exist"));
+
+        List<Transaction> transactions =
+                transactionRepository.findByAccount_Id(accountId);
+
+        return transactions.stream()
+                .map(TransactionMapper::mapToDto)
+                .collect(Collectors.toList());
+    }
 
 }

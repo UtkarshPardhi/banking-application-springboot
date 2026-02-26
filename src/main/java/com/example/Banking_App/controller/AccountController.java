@@ -1,6 +1,7 @@
 package com.example.Banking_App.controller;
 
 import com.example.Banking_App.dto.AccountDto;
+import com.example.Banking_App.dto.TransactionDto;
 import com.example.Banking_App.service.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
@@ -64,5 +66,16 @@ public class AccountController {
     public ResponseEntity<String> deleteAccount(@PathVariable Long id){
         accountService.deleteAccount(id);
         return ResponseEntity.ok("Account is deleted successfully");
+    }
+
+    // Transactions REST API
+    @GetMapping("/{id}/transactions")
+    public ResponseEntity<List<TransactionDto>>
+    getTransactions(@PathVariable Long id) {
+
+        List<TransactionDto> transactions =
+                accountService.getTransactionsByAccountId(id);
+
+        return ResponseEntity.ok(transactions);
     }
 }
