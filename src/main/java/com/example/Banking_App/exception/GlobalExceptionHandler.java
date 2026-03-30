@@ -20,10 +20,66 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 exception.getMessage(),
                 webRequest.getDescription(false),
-                "ACCOUNT_NOT_FOUND"
+                "ACCOUNT_ERROR"
         );
 
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    // 🔐 Authentication Error
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorDetails> handleAuthenticationException(
+            AuthenticationException ex, WebRequest request) {
+
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                request.getDescription(false),
+                "AUTH_ERROR"
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
+    // 👤 User Not Found
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleUserNotFound(
+            UserNotFoundException ex, WebRequest request) {
+
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                request.getDescription(false),
+                "USER_NOT_FOUND"
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    // 🔄 Transaction Error
+    @ExceptionHandler(TransactionException.class)
+    public ResponseEntity<ErrorDetails> handleTransactionException(
+            TransactionException ex, WebRequest request) {
+
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                request.getDescription(false),
+                "TRANSACTION_ERROR"
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    //  🚫 Unauthorized Access
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorDetails> handleUnauthorized(
+            UnauthorizedException ex, WebRequest request) {
+
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                request.getDescription(false),
+                "UNAUTHORIZED"
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
 
     // Handle Generic Exception

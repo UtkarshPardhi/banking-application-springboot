@@ -56,6 +56,17 @@ public class AccountServiceImpl implements AccountService {
 //        Account savedAccount = accountRepository.save(account);
 //        return AccountMapper.mapToAccountDto(savedAccount);
 
+       if (amount <= 0) {
+            throw new RuntimeException("Amount must be greater than zero");
+        }
+
+            // ✅ UPDATE BALANCE
+        account.setBalance(account.getBalance() + amount);
+
+        // ✅ SAVE ACCOUNT
+        accountRepository.save(account);
+
+        // ✅ SAVE TRANSACTION
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
         transaction.setType("DEPOSIT");
@@ -63,9 +74,9 @@ public class AccountServiceImpl implements AccountService {
         transaction.setTimestamp(LocalDateTime.now());
 
         transactionRepository.save(transaction);
-
         return AccountMapper.mapToAccountDto(account);
     }
+
 
     @Override
     public AccountDto withdraw(Long id, double amount) {
@@ -105,6 +116,7 @@ public class AccountServiceImpl implements AccountService {
                .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
 
     public void deleteAccount(Long id) {
@@ -112,8 +124,13 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository
                 .findById(id)
                 .orElseThrow(() -> new AccountException("Account does not exists"));
+        // ✅ DELETE CHILD RECORDS FIRST
+        transactionRepository.deleteByAccount_Id(id);
 
+        // ✅ THEN DELETE ACCOUNT
         accountRepository.deleteById(id);
+
+        System.out.println("Deleting transactions for account: " + id);
 
     }
 
