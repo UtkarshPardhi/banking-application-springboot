@@ -14,5 +14,9 @@ public class BankingAppApplication {
 //        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 //        String hash = encoder.encode("admin123");
 //        System.out.println("HASH: " + hash);
-    }
-}
+
+            }
+        }
+
+
+
