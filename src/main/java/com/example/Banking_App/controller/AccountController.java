@@ -25,7 +25,10 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import java.time.LocalDateTime;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://banking-app-frontend-three.vercel.app"
+})
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
