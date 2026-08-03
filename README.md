@@ -6,8 +6,8 @@ This backend powers the FinGo banking system, enabling secure account management
 ---
 ## Source Code
 
-- 🔧 Backend Repository: https://github.com/UtkarshPardhi/banking-application-springboot/tree/main
-- 🎨 Frontend Repository: https://github.com/UtkarshPardhi/<frontend-repo>
+- 🔧 Backend Repository: https://github.com/UtkarshPardhi/banking-application-springboot
+- 🎨 Frontend Repository: https://github.com/UtkarshPardhi/banking-app-frontend
 
 ## 🌐 Live Deployment
 
