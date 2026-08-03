@@ -4,6 +4,10 @@ A production-ready RESTful Banking Application built using Spring Boot, Spring S
 This backend powers the FinGo banking system, enabling secure account management, transactions, analytics, and role-based access control.
 
 ---
+## Source Code
+
+- 🔧 Backend Repository: https://github.com/UtkarshPardhi/banking-application-springboot/tree/main
+- 🎨 Frontend Repository: https://github.com/UtkarshPardhi/<frontend-repo>
 
 ## 🌐 Live Deployment
 
